@@ -1,16 +1,15 @@
-import { Container, Nav, Navbar } from "react-bootstrap";
+import { Button, Container, Nav, Navbar } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/authContext";
 
 const Header = () => {
-  const user = {
-    name: "najmul",
-    email: "najmul@gmail.com",
-  };
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    console.log("logout");
+    logout();
   };
+
   return (
     <Navbar className="bg-body-tertiary">
       <Container>
@@ -26,10 +25,12 @@ const Header = () => {
           {user ? (
             <>
               <Nav.Link onClick={() => navigate("/profile")}>Profile</Nav.Link>
-              <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
+              <Button variant="danger" onClick={handleLogout}>
+                Logout
+              </Button>
             </>
           ) : (
-            <Nav.Link onClick={() => navigate("/login")}>Login</Nav.Link>
+            <Button onClick={() => navigate("/login")}>Login</Button>
           )}
         </Nav>
       </Container>

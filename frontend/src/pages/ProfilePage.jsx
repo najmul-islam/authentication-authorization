@@ -1,18 +1,16 @@
 import { Col, Container, Row } from "react-bootstrap";
 import { Navigate } from "react-router-dom";
+import { useAuth } from "../contexts/authContext";
 
 const ProfilePage = () => {
-  const user = {
-    name: "najmul",
-    email: "najmul@gmail.com",
-  };
+  const { user, profile } = useAuth();
 
   return user ? (
     <Container>
       <Row>
         <Col className="py-4">
-          <h5>Name: {user.name}</h5>
-          <h6>Email: {user.email}</h6>
+          <h5>Name: {profile.name}</h5>
+          <h6>Email: {profile.email}</h6>
         </Col>
       </Row>
     </Container>

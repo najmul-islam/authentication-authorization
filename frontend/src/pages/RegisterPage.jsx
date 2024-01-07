@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
-import { Container, Row, Col, Form, Button, Stack } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
-import { FaFacebook, FaGoogle } from "react-icons/fa";
+import { Container, Row, Col, Form, Button, Stack, Nav } from "react-bootstrap";
+import { Link, useNavigate } from "react-router-dom";
+import { FaFacebook, FaGoogle, FaGithub } from "react-icons/fa";
+import { useAuth } from "../contexts/authContext";
 
 const RegisterPage = () => {
-  const user = {
-    name: "najmul",
-    email: "najmul@gmail.com",
-  };
+  const { user, register } = useAuth();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -23,9 +21,16 @@ const RegisterPage = () => {
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("submit form");
+    register(formData)
+      .then((response) => {
+        localStorage.setItem("user", JSON.stringify(response));
+        navigate("/");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   useEffect(() => {
@@ -36,65 +41,103 @@ const RegisterPage = () => {
 
   return (
     <Container>
-      <Row className="py-3">
-        {/* <Col></Col> */}
-        <Col>
-          <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-3">
-              <Form.Label>Name</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
+      <Row className="py-3 justify-content-center">
+        <Col md="8" lg="6" xl="5">
+          <div className="border rounded p-4">
+            <Stack direction="horizontal" gap={3} className="my-3">
+              <div className="h5">Register</div>
 
-            <Form.Group className="mb-3">
-              <Form.Label>Email address</Form.Label>
-              <Form.Control
-                type="email"
-                placeholder="Enter email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
+              <Nav.Link
+                className="ms-auto border-bottom"
+                onClick={() => navigate("/login")}
+              >
+                All ready have an account?
+              </Nav.Link>
+            </Stack>
+            <Form onSubmit={handleSubmit}>
+              <Stack gap={3}>
+                <Form.Group>
+                  <Form.Label>Name*</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                  />
+                </Form.Group>
 
-            <Form.Group className="mb-3">
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Check type="checkbox" label="Check me out" />
-            </Form.Group>
-            <Button variant="primary" type="submit">
-              Register
-            </Button>
-          </Form>
+                <Form.Group>
+                  <Form.Label>Email*</Form.Label>
+                  <Form.Control
+                    type="email"
+                    placeholder="Enter email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                  />
+                </Form.Group>
+
+                <Form.Group>
+                  <Form.Label>Password*</Form.Label>
+                  <Form.Control
+                    type="password"
+                    placeholder="Enter password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                  />
+                </Form.Group>
+                <small className="fw-semibold">
+                  By Signing up, you agree to our{" "}
+                  <Link to="/terms-of-service">Terms of Service </Link>
+                  and <Link to="/privacy-policy">Privacy Policy</Link>
+                </small>
+
+                <Button variant="primary" type="submit" className="w-100">
+                  Register
+                </Button>
+              </Stack>
+            </Form>
+
+            <div className="border-bottom my-3 "></div>
+
+            <Stack direction="horizontal" className="justify-center" gap={3}>
+              <Button
+                className="me-auto w-100"
+                style={{ backgroundColor: "#4285F4" }}
+                href="#!"
+                role="button"
+              >
+                <FaGoogle style={{ marginRight: "5px" }} />
+                Google
+              </Button>
+              <Button
+                className="me-auto w-100"
+                style={{ backgroundColor: "#0766FF" }}
+                href="#!"
+                role="button"
+              >
+                <FaFacebook style={{ marginRight: "5px" }} />
+                Facebook
+              </Button>
+
+              <Button
+                className="me-auto w-100"
+                style={{ backgroundColor: "#010409" }}
+                href="#!"
+                role="button"
+              >
+                <FaGithub style={{ marginRight: "5px" }} />
+                Github
+              </Button>
+            </Stack>
+          </div>
         </Col>
-        {/* <Col></Col> */}
       </Row>
-      <Stack direction="horizontal" gap={3}>
-        <Button style={{ backgroundColor: "#3b5998" }} href="#!" role="button">
-          <FaGoogle style={{ marginRight: "5px" }} />
-          Google
-        </Button>
-        <Button style={{ backgroundColor: "#55acee" }} href="#!" role="button">
-          <FaFacebook style={{ marginRight: "5px" }} />
-          Facebook
-        </Button>
-      </Stack>
     </Container>
   );
 };
