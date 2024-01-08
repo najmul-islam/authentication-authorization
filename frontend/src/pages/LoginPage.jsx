@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Stack, Button, Form, Container, Row, Col, Nav } from "react-bootstrap";
 import { FaGoogle, FaFacebook, FaGithub } from "react-icons/fa";
 import { useAuth } from "../contexts/authContext";
@@ -28,14 +28,7 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    login(formData)
-      .then((response) => {
-        localStorage.setItem("user", JSON.stringify(response));
-        navigate("/");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    login(formData);
   };
 
   useEffect(() => {
@@ -44,7 +37,6 @@ const LoginPage = () => {
     }
   }, [user, navigate]);
 
-  console.log(formData);
   return (
     <Container>
       <Row className="py-3 justify-content-center">

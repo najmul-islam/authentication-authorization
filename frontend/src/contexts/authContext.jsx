@@ -1,6 +1,8 @@
 import { useState, useEffect, useContext, createContext } from "react";
+import { useNavigate } from "react-router";
 
 const AuthContext = createContext();
+const URI = "http://localhost:5000/api/user";
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
@@ -9,79 +11,61 @@ export const AuthProvider = ({ children }) => {
   });
 
   const [profile, setProfile] = useState({});
+  const navigate = useNavigate();
 
   const register = (userData) => {
-    const promise = new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-
-      xhr.open("POST", "http://localhost:5000/api/user/register");
-      xhr.responseType = "json";
-      xhr.setRequestHeader("Content-Type", "application/json");
-      xhr.onload = () => {
-        if (xhr.status >= 400) {
-          reject(xhr.response);
-        } else {
-          setUser(xhr.response);
-          resolve(xhr.response);
-        }
-      };
-
-      xhr.onerror = () => {
-        reject("something went wrong!");
-      };
-
-      xhr.send(JSON.stringify(userData));
-    });
-    return promise;
+    fetch(`${URI}/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData),
+    })
+      .then((response) => response.json())
+      .then((user) => {
+        localStorage.setItem("user", JSON.stringify(user));
+        setUser(user);
+        navigate("/");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const login = (userData) => {
-    const promise = new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-
-      xhr.open("POST", "http://localhost:5000/api/user/login");
-      xhr.responseType = "json";
-      xhr.setRequestHeader("Content-Type", "application/json");
-      xhr.onload = () => {
-        if (xhr.status >= 400) {
-          reject(xhr.response);
-        } else {
-          setUser(xhr.response);
-          resolve(xhr.response);
-        }
-      };
-
-      xhr.onerror = () => {
-        reject("something went wrong login");
-      };
-
-      xhr.send(JSON.stringify(userData));
-    });
-    return promise;
+    fetch(`${URI}/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData),
+    })
+      .then((response) => response.json())
+      .then((user) => {
+        localStorage.setItem("user", JSON.stringify(user));
+        setUser(user);
+        navigate("/");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const getProfile = () => {
-    const promise = new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-
-      xhr.open("GET", "http://localhost:5000/api/user/profile");
-      xhr.responseType = "json";
-      xhr.setRequestHeader("Authorization", "Bearer " + user.token);
-      xhr.onload = () => {
-        if (xhr.status >= 400) {
-          reject(xhr.response);
-        } else {
-          setProfile(xhr.response);
-          resolve(xhr.response);
-        }
-      };
-
-      xhr.onerror = () => {
-        reject("something went wrong while fetching profile");
-      };
-      xhr.send();
-    });
-    return promise;
+    fetch(`${URI}/profile`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user.token}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((user) => {
+        setProfile(user);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const logout = () => {
@@ -100,12 +84,10 @@ export const AuthProvider = ({ children }) => {
     if (user) {
       getProfile();
     }
-  }, [user, getProfile]);
+  }, [user]);
 
   return (
-    <AuthContext.Provider
-      value={{ user, register, login, profile, getProfile, logout }}
-    >
+    <AuthContext.Provider value={{ user, register, login, profile, logout }}>
       {children}
     </AuthContext.Provider>
   );

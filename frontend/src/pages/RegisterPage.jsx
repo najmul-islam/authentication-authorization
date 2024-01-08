@@ -23,14 +23,7 @@ const RegisterPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    register(formData)
-      .then((response) => {
-        localStorage.setItem("user", JSON.stringify(response));
-        navigate("/");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    register(formData);
   };
 
   useEffect(() => {
