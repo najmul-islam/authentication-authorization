@@ -1,14 +1,12 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect, useContext, createContext } from "react";
 import { useNavigate } from "react-router";
+import axios from "axios";
 
 const AuthContext = createContext();
 const URI = "http://localhost:5000/api/user";
 
 export const AuthProvider = ({ children }) => {
-  const [loading, setLoading] = useState(true);
-  const [profile, setProfile] = useState({});
-
   const [user, setUser] = useState(() => {
     const user = localStorage.getItem("user");
     return user ? JSON.parse(user) : null;
@@ -17,17 +15,12 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
   const register = async (userData) => {
-    /*fetch(`${URI}/register`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(userData),
-    })
-      .then((response) => response.json())
-      .then((user) => {
-        localStorage.setItem("user", JSON.stringify(user));
-        setUser(user);
+    /* 
+    axios
+      .post(`${URI}/register`, userData)
+      .then((data) => {
+        localStorage.setItem("user", JSON.stringify(data.data));
+        setUser(data.data);
         navigate("/");
       })
       .catch((err) => {
@@ -35,17 +28,9 @@ export const AuthProvider = ({ children }) => {
       });
     */
     try {
-      const result = await fetch(`${URI}/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
-      });
-      const user = await result.json();
-      console.log("user", user);
-      localStorage.setItem("user", JSON.stringify(user));
-      setUser(user);
+      const result = await axios.post(`${URI}/register`, userData);
+      localStorage.setItem("user", JSON.stringify(result.data));
+      setUser(result.data);
       navigate("/");
     } catch (error) {
       console.log(error);
@@ -53,37 +38,23 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (userData) => {
-    /*
-    fetch(`${URI}/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(userData),
-    })
-      .then((response) => response.json())
-      .then((user) => {
-        localStorage.setItem("user", JSON.stringify(user));
-        setUser(user);
+    /* 
+    axios
+      .post(`${URI}/login`, userData)
+      .then((data) => {
+        console.log(data);
+        localStorage.setItem("user", JSON.stringify(data.data));
+        setUser(data.data);
         navigate("/");
       })
       .catch((err) => {
         console.log(err);
       });
     */
-
     try {
-      const result = await fetch(`${URI}/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
-      });
-      const user = await result.json();
-
-      localStorage.setItem("user", JSON.stringify(user));
-      setUser(user);
+      const result = await axios.post(`${URI}/login`, userData);
+      localStorage.setItem("user", JSON.stringify(result.data));
+      setUser(result.data);
       navigate("/");
     } catch (error) {
       console.log(error);
@@ -103,9 +74,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider
-      value={{ user, register, login, loading, profile, logout }}
-    >
+    <AuthContext.Provider value={{ user, register, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

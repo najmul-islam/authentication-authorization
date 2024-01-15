@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect, useContext, createContext } from "react";
+import axios from "axios";
 
 const ProfileContext = createContext();
 const URI = "http://localhost:5000/api/user";
@@ -8,37 +9,34 @@ export const ProfileProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState({});
 
-  const user = localStorage.getItem("user")
-    ? JSON.parse(localStorage.getItem("user"))
-    : null;
+  const [user, setUser] = useState(() => {
+    const user = localStorage.getItem("user");
+    return user ? JSON.parse(user) : null;
+  });
+
   const getProfile = async () => {
-    /*
-    fetch(`${URI}/profile`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${user.token}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((user) => {
-        setProfile(user);
+    /* 
+    axios
+      .get(`${URI}/profile`, {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      })
+      .then((result) => {
+        setProfile(result.data);
+        setLoading(false);
       })
       .catch((err) => {
         console.log(err);
       });
     */
-
     try {
-      const result = await fetch(`${URI}/profile`, {
-        method: "GET",
+      const result = await axios.get(`${URI}/profile`, {
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${user.token}`,
         },
       });
-      const profile = await result.json();
-      setProfile(profile);
+      setProfile(result.data);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -50,7 +48,6 @@ export const ProfileProvider = ({ children }) => {
       getProfile();
     }
   }, []);
-  console.log(profile);
 
   return (
     <ProfileContext.Provider value={{ loading, profile }}>
