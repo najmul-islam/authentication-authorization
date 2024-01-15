@@ -2,17 +2,22 @@ import { useEffect, useState } from "react";
 import { Container, Row, Col, Form, Button, Stack, Nav } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { FaFacebook, FaGoogle, FaGithub } from "react-icons/fa";
-import { useAuth } from "../contexts/authContext";
+import { register, reset } from "../features/auth/authSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const RegisterPage = () => {
-  const { user, register } = useAuth();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
   });
 
+  const { user, isLoading, isError, isSuccess, message } = useSelector(
+    (state) => state.auth
+  );
+
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setFormData({
@@ -23,14 +28,22 @@ const RegisterPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    register(formData);
+    dispatch(register(formData));
   };
 
   useEffect(() => {
-    if (user) {
+    if (isError) {
+      console.log(message);
+    }
+
+    if (isSuccess || user) {
       navigate("/");
     }
-  }, [user, navigate]);
+
+    dispatch(reset());
+  }, [user, isError, isSuccess, message, navigate, dispatch]);
+
+  if (isLoading) return <h3>Loading...</h3>;
 
   return (
     <Container>

@@ -2,10 +2,13 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Stack, Button, Form, Container, Row, Col, Nav } from "react-bootstrap";
 import { FaGoogle, FaFacebook, FaGithub } from "react-icons/fa";
-import { useAuth } from "../contexts/authContext";
+import { useDispatch, useSelector } from "react-redux";
+import { login, reset } from "../features/auth/authSlice";
 
 const LoginPage = () => {
-  const { user, login } = useAuth();
+  const { user, isLoading, isError, isSuccess, message } = useSelector(
+    (state) => state.auth
+  );
 
   const [formData, setFormData] = useState({
     email: "",
@@ -14,6 +17,7 @@ const LoginPage = () => {
   });
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -28,15 +32,25 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    login(formData);
+
+    dispatch(login(formData));
   };
 
   useEffect(() => {
-    if (user) {
+    if (isError) {
+      console.log(message);
+    }
+
+    if (isSuccess || user) {
       navigate("/");
     }
-  }, [user, navigate]);
 
+    dispatch(reset());
+  }, [user, isError, isSuccess, message, navigate, dispatch]);
+
+  if (isLoading) {
+    return <h3>Loading...</h3>;
+  }
   return (
     <Container>
       <Row className="py-3 justify-content-center">
