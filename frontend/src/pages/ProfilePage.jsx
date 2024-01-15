@@ -1,33 +1,23 @@
 import { Col, Container, Row } from "react-bootstrap";
 import { Navigate, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useEffect } from "react";
-import { getProfile } from "../features/user/userSlice";
-import { reset } from "../features/auth/authSlice";
+import { useProfileQuery } from "../features/user/userApi";
 
 const ProfilePage = () => {
   const { user } = useSelector((state) => state.auth);
-  const { profile, isLoading, isError, message } = useSelector(
-    (state) => state.user
-  );
+  const { data: profile, isLoading, isError, error } = useProfileQuery();
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   useEffect(() => {
     if (isError) {
-      console.log(message);
+      console.log(error);
     }
     if (!profile) {
       navigate("/login");
     }
-
-    dispatch(getProfile());
-
-    return () => {
-      dispatch(reset());
-    };
-  }, []);
+  }, [isError, navigate, profile, error]);
 
   return user ? (
     <Container>

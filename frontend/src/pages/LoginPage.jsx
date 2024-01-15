@@ -3,13 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { Stack, Button, Form, Container, Row, Col, Nav } from "react-bootstrap";
 import { FaGoogle, FaFacebook, FaGithub } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import { login, reset } from "../features/auth/authSlice";
+import { useLoginMutation } from "../features/auth/authApi";
 
 const LoginPage = () => {
-  const { user, isLoading, isError, isSuccess, message } = useSelector(
-    (state) => state.auth
-  );
-
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -18,6 +14,9 @@ const LoginPage = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const [login, { isLoading, isError, isSuccess, error }] = useLoginMutation();
+  const { user } = useSelector((state) => state.auth);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -30,23 +29,20 @@ const LoginPage = () => {
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-    dispatch(login(formData));
+    login(formData);
   };
 
   useEffect(() => {
     if (isError) {
-      console.log(message);
+      console.log(error);
     }
 
     if (isSuccess || user) {
       navigate("/");
     }
-
-    dispatch(reset());
-  }, [user, isError, isSuccess, message, navigate, dispatch]);
+  }, [user, isError, isSuccess, navigate, dispatch, error]);
 
   if (isLoading) {
     return <h3>Loading...</h3>;

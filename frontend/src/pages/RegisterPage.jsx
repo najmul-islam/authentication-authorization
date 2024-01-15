@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { Container, Row, Col, Form, Button, Stack, Nav } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { FaFacebook, FaGoogle, FaGithub } from "react-icons/fa";
-import { register, reset } from "../features/auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { useRegisterMutation } from "../features/auth/authApi";
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -12,12 +12,12 @@ const RegisterPage = () => {
     password: "",
   });
 
-  const { user, isLoading, isError, isSuccess, message } = useSelector(
-    (state) => state.auth
-  );
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const [register, { isLoading, isError, isSuccess, error }] =
+    useRegisterMutation();
+  const { user } = useSelector((state) => state.auth);
 
   const handleChange = (e) => {
     setFormData({
@@ -28,20 +28,18 @@ const RegisterPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(register(formData));
+    register(formData);
   };
 
   useEffect(() => {
     if (isError) {
-      console.log(message);
+      console.log(error);
     }
 
     if (isSuccess || user) {
       navigate("/");
     }
-
-    dispatch(reset());
-  }, [user, isError, isSuccess, message, navigate, dispatch]);
+  }, [user, isError, isSuccess, error, navigate, dispatch]);
 
   if (isLoading) return <h3>Loading...</h3>;
 
