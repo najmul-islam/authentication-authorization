@@ -29,13 +29,12 @@ const register = asyncHandler(async (req, res) => {
   });
 
   if (user) {
+    req.session.userId = user.id;
+
     res.status(201).json({
       _id: user.id,
       name: user.name,
       email: user.email,
-      role: user.role,
-      avatar: user.avatar,
-      token: user.generateToken(),
     });
   } else {
     res.status(400);
@@ -50,13 +49,12 @@ const login = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
 
   if (user && (await user.isValidPassword(password))) {
-    res.json({
+    req.session.userId = user.id;
+
+    res.status(200).json({
       _id: user.id,
       name: user.name,
       email: user.email,
-      role: user.role,
-      avatar: user.avatar,
-      token: user.generateToken(),
     });
   } else {
     res.status(400);
@@ -64,10 +62,19 @@ const login = asyncHandler(async (req, res) => {
   }
 });
 
+// logout
+const logout = asyncHandler(async (req, res) => {
+  if (req.session.userId) {
+    req.session.destroy();
+  }
+  res.status(200).json({
+    msg: "logout successfully",
+  });
+});
+
 // profile
 const profile = asyncHandler(async (req, res) => {
-  const userId = req.user._id;
-
+  const userId = req.userId;
   const user = await User.findById(userId).select("-password");
 
   if (!user) {
@@ -87,6 +94,7 @@ const users = asyncHandler(async (req, res) => {
 module.exports = {
   register,
   login,
+  logout,
   profile,
   users,
 };

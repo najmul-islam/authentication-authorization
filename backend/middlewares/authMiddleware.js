@@ -3,7 +3,8 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 
 // check user
-const isUser = asyncHanlder(async (req, res, next) => {
+/*
+ const isUser = asyncHanlder(async (req, res, next) => {
   let token;
 
   if (
@@ -33,5 +34,16 @@ const isUser = asyncHanlder(async (req, res, next) => {
     throw new Error("Not authorized, no token");
   }
 });
+*/
+
+const isUser = (req, res, next) => {
+  if (req.session.userId) {
+    req.userId = req.session.userId;
+    next();
+  } else {
+    res.status(401);
+    throw new Error("Not authorized");
+  }
+};
 
 module.exports = { isUser };
