@@ -17,7 +17,7 @@ const RegisterPage = () => {
 
   const [register, { isLoading, isError, isSuccess, error }] =
     useRegisterMutation();
-  const { user } = useSelector((state) => state.auth);
+  // const { user } = useSelector((state) => state.auth);
 
   const handleChange = (e) => {
     setFormData({
@@ -36,10 +36,10 @@ const RegisterPage = () => {
       console.log(error);
     }
 
-    if (isSuccess || user) {
+    if (isSuccess) {
       navigate("/");
     }
-  }, [user, isError, isSuccess, error, navigate, dispatch]);
+  }, [isError, isSuccess, error, navigate]);
 
   if (isLoading) return <h3>Loading...</h3>;
 

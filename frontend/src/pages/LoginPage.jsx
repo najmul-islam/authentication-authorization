@@ -16,7 +16,7 @@ const LoginPage = () => {
   const dispatch = useDispatch();
 
   const [login, { isLoading, isError, isSuccess, error }] = useLoginMutation();
-  const { user } = useSelector((state) => state.auth);
+  // const { user } = useSelector((state) => state.auth);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -39,14 +39,15 @@ const LoginPage = () => {
       console.log(error);
     }
 
-    if (isSuccess || user) {
+    if (isSuccess) {
       navigate("/");
     }
-  }, [user, isError, isSuccess, navigate, dispatch, error]);
+  }, [isError, isSuccess, navigate, error]);
 
   if (isLoading) {
     return <h3>Loading...</h3>;
   }
+
   return (
     <Container>
       <Row className="py-3 justify-content-center">

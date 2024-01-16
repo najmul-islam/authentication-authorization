@@ -5,9 +5,10 @@ import { useEffect } from "react";
 import { useProfileQuery } from "../features/user/userApi";
 
 const ProfilePage = () => {
-  const { user } = useSelector((state) => state.auth);
+  // const { user } = useSelector((state) => state.auth);
   const { data: profile, isLoading, isError, error } = useProfileQuery();
 
+  const user = true;
   const navigate = useNavigate();
 
   useEffect(() => {
