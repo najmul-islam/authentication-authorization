@@ -1,4 +1,5 @@
 import { apiSlice } from "../api/apiSlice";
+import { login } from "./authSlice";
 
 export const authApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -8,14 +9,14 @@ export const authApi = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
       }),
-      // async onQueryStarted(arg, { queryFulfilled, dispatch }) {
-      //   try {
-      //     const result = await queryFulfilled;
-      //     if (result && result?.data.token) {
-      //       dispatch(login(result.data));
-      //     }
-      //   } catch (error) {}
-      // },
+      async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+        try {
+          const result = await queryFulfilled;
+          if (result && result?.data.token) {
+            dispatch(login(result.data));
+          }
+        } catch (error) {}
+      },
     }),
 
     login: builder.mutation({
@@ -24,24 +25,16 @@ export const authApi = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
       }),
-      // async onQueryStarted(arg, { queryFulfilled, dispatch }) {
-      //   try {
-      //     const result = await queryFulfilled;
-      //     if (result && result?.data.token) {
-      //       dispatch(login(result.data));
-      //     }
-      //   } catch (error) {}
-      // },
-    }),
-
-    logout: builder.mutation({
-      query: () => ({
-        query: "/user/logout",
-        method: "POST",
-      }),
+      async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+        try {
+          const result = await queryFulfilled;
+          if (result && result?.data.token) {
+            dispatch(login(result.data));
+          }
+        } catch (error) {}
+      },
     }),
   }),
 });
 
-export const { useRegisterMutation, useLoginMutation, useLogoutMutation } =
-  authApi;
+export const { useRegisterMutation, useLoginMutation } = authApi;

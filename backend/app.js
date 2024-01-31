@@ -4,6 +4,7 @@ const colors = require("colors");
 const cookies = require("cookie-parser");
 const mongodb = require("./configs/mongdb");
 const cors = require("./configs/cors");
+const passport = require("./middlewares/passportMiddleware");
 
 const app = express();
 
@@ -12,6 +13,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookies());
+app.use(passport.initialize());
 
 // route
 app.use("/api/user", require("./routes/userRoute"));
