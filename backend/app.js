@@ -1,16 +1,17 @@
 const express = require("express");
 const dotenv = require("dotenv").config();
 const colors = require("colors");
+const cookies = require("cookie-parser");
 const mongodb = require("./configs/mongdb");
-const session = require("./configs/session");
 const cors = require("./configs/cors");
 
 const app = express();
 
+// additional middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(session());
+app.use(cookies());
 
 // route
 app.use("/api/user", require("./routes/userRoute"));
@@ -20,7 +21,7 @@ app.get("/", (req, res) => {
   res.send(`<h3>Authentication Authorization</h3>`);
 });
 
-// error handler
+// error middleware
 app.use(require("./middlewares/notFoundMiddleware"));
 app.use(require("./middlewares/errorMiddleware"));
 

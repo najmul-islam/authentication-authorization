@@ -3,17 +3,14 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 
 // check user
-/*
- const isUser = asyncHanlder(async (req, res, next) => {
-  let token;
 
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer")
-  ) {
+const isUser = asyncHanlder(async (req, res, next) => {
+  let token;
+  token = req.cookies.jwt;
+
+  if (token) {
     try {
       // get token header
-      token = req.headers.authorization.split(" ")[1];
 
       // verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -34,16 +31,5 @@ const User = require("../models/userModel");
     throw new Error("Not authorized, no token");
   }
 });
-*/
-
-const isUser = (req, res, next) => {
-  if (req.session.userId) {
-    req.userId = req.session.userId;
-    next();
-  } else {
-    res.status(401);
-    throw new Error("Not authorized");
-  }
-};
 
 module.exports = { isUser };

@@ -29,7 +29,7 @@ const register = asyncHandler(async (req, res) => {
   });
 
   if (user) {
-    req.session.userId = user.id;
+    user.generateToken(res);
 
     res.status(201).json({
       _id: user.id,
@@ -49,7 +49,7 @@ const login = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
 
   if (user && (await user.isValidPassword(password))) {
-    req.session.userId = user.id;
+    user.generateToken(res);
 
     res.status(200).json({
       _id: user.id,
@@ -64,18 +64,19 @@ const login = asyncHandler(async (req, res) => {
 
 // logout
 const logout = asyncHandler(async (req, res) => {
-  if (req.session.userId) {
-    req.session.destroy();
-  }
+  res.cookie("jwt", "", {
+    httpOnly: true,
+    expires: new Date(0),
+  });
+
   res.status(200).json({
-    msg: "logout successfully",
+    message: "Logged out successfully",
   });
 });
 
 // profile
 const profile = asyncHandler(async (req, res) => {
-  const userId = req.userId;
-  const user = await User.findById(userId).select("-password");
+  const user = await User.findById(req.user._id).select("-password");
 
   if (!user) {
     res.status(404);
