@@ -5,6 +5,17 @@ This repository is dedicated to exploring and implementing various techniques an
 ## introduction
 Authentication and authorization are fundamental concepts in web development, ensuring that users are who they claim to be and that they have permission to access certain resources. This repository provides a comprehensive exploration of these concepts, with practical examples in various web technologies.
 
+## Techniques Covered
+
+This repository covers the following authentication and authorization techniques:
+
+- [Basic Authentication](https://github.com/najmul-islam/authentication-authorization/tree/01-basic-authentication)
+- [Session-Based Authentication](https://github.com/najmul-islam/authentication-authorization/tree/02-session-based-authentication)
+- [Cookie-Based Authentication](https://github.com/najmul-islam/authentication-authorization/tree/03-cookie-based-authentication)
+- [Token-Based Authentication](https://github.com/najmul-islam/authentication-authorization/tree/04-token-based-authentication)
+- [JWT (JSON Web Token) Authentication](https://github.com/najmul-islam/authentication-authorization/tree/05-jwt-authentication)
+- [Third-Party Authentication Services](https://github.com/najmul-islam/authentication-authorization/tree/06-third-party-authentication)
+
 ## Backend Covered
 
 This repository includes backend implementations using the following languages and frameworks:
@@ -39,17 +50,6 @@ This repository explores the use of various tools and technologies that aid in i
 - redux-thunk
 - redux-toolkit
 - redux-toolkit-query
-  
-## Techniques Covered
-
-This repository covers the following authentication and authorization techniques:
-
-- Basic Authentication
-- Session-Based Authentication
-- Cookie-Based Authentication
-- Token-Based Authentication
-- JWT (JSON Web Token) Authentication
-- Third-Party Authentication Services
 
 ## Contributing
 
