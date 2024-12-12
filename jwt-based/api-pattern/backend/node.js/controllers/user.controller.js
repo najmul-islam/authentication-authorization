@@ -3,8 +3,6 @@ const { hashPassword, comparePassword } = require("../utils/hashPassword");
 
 const headers = {
   "Content-Type": "application/json",
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
 };
 
 const profile = async (req, res) => {
